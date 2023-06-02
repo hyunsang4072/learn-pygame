@@ -25,12 +25,57 @@ class Target(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = [pos_x, pos_y]
 
+class GameState():
+    def __init__(self):
+        self.state = 'intro'
+
+    def intro(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.state = 'main_game'
+    
+        screen.blit(background, (0, 0))
+        screen.blit(get_ready, (screen_width//4, screen_height//4))
+        # target_group.draw(screen)
+        hairyhair_group.draw(screen)
+        hairyhair_group.update()
+
+        pygame.display.flip()
+    
+    def main_game(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                hairyhair.shoot()
+
+        screen.blit(background, (0, 0))
+        target_group.draw(screen)
+        hairyhair_group.draw(screen)
+        
+        # Get mouse position and update
+        hairyhair_group.update()
+
+        pygame.display.flip()
+
+    def state_check(self):
+        if self.state == "intro":
+            self.intro()
+        if self.state == 'main_game':
+            self.main_game()
+
+
 # General setup
 pygame.init()
 clock = pygame.time.Clock()
+game_state = GameState()
 
 # Colors
-# white = (255, 255, 255)
+# white = (255, 255, 255) 
 
 # Game screen
 screen_width = 1920 // 2 - 300
@@ -38,7 +83,10 @@ screen_height = 1080 // 2 - 100
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Set background
+pygame.display.set_caption("Sprites")
 background = pygame.image.load("./shooting_target/Background_Blue.png")
+# Ready Screen
+get_ready = pygame.image.load("./stages_in_game/CrazyWizard.png")
 # No mouse showing on gamescreen
 pygame.mouse.set_visible(False)
 
@@ -55,18 +103,5 @@ for target in range(10):
     target_group.add(new_target)
 
 while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            hairyhair.shoot()
-    
-    pygame.display.flip()
-    screen.blit(background, (0, 0))
-    target_group.draw(screen)
-    hairyhair_group.draw(screen)
-    
-    # Get mouse position and update
-    hairyhair_group.update()
+    game_state.state_check()
     clock.tick(60)
