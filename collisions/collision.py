@@ -31,7 +31,7 @@ def move_objects():
         y_speed *= -1
     
     # Check for Object Collision
-    collision_tolerance = 6
+    collision_tolerance = 7
     if moving_rect.colliderect(other_rect):
         # 
         if abs(other_rect.top - moving_rect.bottom) < collision_tolerance and y_speed > 0:
